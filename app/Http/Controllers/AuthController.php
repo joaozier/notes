@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         //teste da conexão da base de dados
         try {
-            DB::connection()->getPdo();
+            DB::Connection()->getPdo();
             echo 'Conexão feita.';
         } catch (\PDOException $e) {
             echo "Conexão falhou: ".$e->getMessage();
