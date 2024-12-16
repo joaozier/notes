@@ -16,8 +16,8 @@ return new class extends Migration
             $table->integer('user_id')->nullable();
             $table->string('title',200)->nullable();
             $table->string('text',3000)->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

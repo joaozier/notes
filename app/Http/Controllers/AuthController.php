@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 
@@ -32,15 +33,37 @@ class AuthController extends Controller
         $username=$request->input('text_username');
         $password=$request->input('text_password');
 
-        //teste da conexão da base de dados
-        try {
-            DB::Connection()->getPdo();
-            echo 'Conexão feita.';
-        } catch (\PDOException $e) {
-            echo "Conexão falhou: ".$e->getMessage();
+        //checagem se usuário existe
+        $user=User::where('username',$username)->where('deleted_at',NULL)->first();
+        if (!$user) {
+            return redirect()->back()->withInput()->with('loginError','Usuário ou senha incorretos.');
         }
 
-        echo "<br>Fim.";
+        //checar se senha está correta
+        if(!password_verify($password,$user->password)){
+            return redirect()->back()->withInput()->with('loginError','Usuário ou senha incorretos.');
+        }
+        //atualizar último login
+        $user->last_login=date('Y-m-d H:i:s');
+        $user->save();
+
+        //usuário logado
+        session([
+            'user'=>[
+                'id'=>$user->id,
+                'username'=>$user->username
+            ]
+            ]);
+        echo 'Login com sucesso';
+
+        //teste da conexão da base de dados
+        // try {
+        //     DB::Connection()->getPdo();
+        //     echo 'Conexão feita.';
+        // } catch (\PDOException $e) {
+        //     echo "Conexão falhou: ".$e->getMessage();
+        // }
+
 
     }
     public function logout()
