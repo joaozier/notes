@@ -54,7 +54,8 @@ class AuthController extends Controller
                 'username'=>$user->username
             ]
             ]);
-        echo 'Login com sucesso';
+        // redirecionar para o inicio
+        return redirect()->to('/');
 
         //teste da conexão da base de dados
         // try {
@@ -68,6 +69,7 @@ class AuthController extends Controller
     }
     public function logout()
     {
-        echo "Logout";
+        session()->forget('user');
+        return redirect()->to('/login');
     }
 }
